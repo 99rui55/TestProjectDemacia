@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
@@ -33,15 +34,18 @@ public class Drive extends SubsystemBase {
     rearLeft = new TalonFX(Constants.leftRear);
     rearLeft.setInverted(false);
     rearLeft.follow(frontLeft);
+    frontRight.config_kP(0, 0.000008);
+    frontRight.config_kD(0,0);
+    frontRight.config_kI(0,0);
+    frontLeft.config_kP(0, 0.000008);
+    frontLeft.config_kD(0,0);
+    frontLeft.config_kI(0,0);
     resetEncoder();
     setDefaultCommand(new DriveByJoystick(this,left, right));
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Left Position", getLeftMeters());
-    SmartDashboard.putNumber("Right Position",  getRightMeters());
-    SmartDashboard.putNumber("encoder: ", getGyro());
     // This method will be called once per scheduler run
   }
   
@@ -63,8 +67,26 @@ public class Drive extends SubsystemBase {
   }
 
   public double getVelocity(){
-    return((frontRight.getSelectedSensorVelocity()*10/Constants.PULSE_PER_METER)+(frontLeft.getSelectedSensorVelocity()*10/Constants.PULSE_PER_METER))/2;
+    return((frontRight.getSelectedSensorVelocity()*10/Constants.PULSE_PER_METER)+(
+      frontLeft.getSelectedSensorVelocity()*10/Constants.PULSE_PER_METER))/2;
   }
+
+  private double getFF(double vel) {
+    return Constants.KS * Math.signum(vel) + vel * Constants.KV;
+  }
+  private double getTalonVel(double vel) {
+    return vel / 10 / Constants.PULSE_PER_METER;
+  }
+
+  public void setVelocity(double lVelocity,double rVelocity){
+    frontLeft.set(ControlMode.Velocity, getTalonVel(lVelocity),
+     DemandType.ArbitraryFeedForward,getFF(lVelocity));
+
+     frontRight.set(ControlMode.Velocity, getTalonVel(rVelocity),
+     DemandType.ArbitraryFeedForward,getFF(rVelocity));
+  }
+
+     
 
   @Override
   public void simulationPeriodic() {

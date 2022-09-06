@@ -21,4 +21,6 @@ public final class Constants {
     public static final int joystickL = 1;
     public static final int PULSE_PER_METER = 51330;
     public static final int GYRO = 14;
+    public static final double KS = 0.03;
+    public static final double KV = 0.2301;
 }

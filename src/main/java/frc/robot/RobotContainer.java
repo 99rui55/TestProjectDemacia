@@ -14,6 +14,7 @@ import frc.robot.commands.MoveForward;
 import frc.robot.commands.PID;
 import frc.robot.commands.Print;
 import frc.robot.commands.Turn;
+import frc.robot.commands.setvelocity;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -64,9 +65,11 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return(new InstantCommand(()->drive.setPower(0.3,0.3),drive)
-    .andThen(new WaitCommand(3),
+   return(new InstantCommand(()->drive.setPower(0.5,0.5),drive)
+    .andThen(new WaitCommand(3.5),
     new InstantCommand(()->SmartDashboard.putNumber("velocity",drive.getVelocity())),
     new InstantCommand(()->drive.setPower(0,0),drive))); 
+   // setvelocity velo = new setvelocity(1, drive);
+    //return velo;
   }
 }

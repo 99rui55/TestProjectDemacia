@@ -42,8 +42,7 @@ public class DriveByJoystick extends CommandBase {
     double Lpos = joystickL.getY();
     Rpower = (Math.pow(Rpos,2)>0.15)?(Math.pow(Rpos,2)*Math.signum(Rpos))/3*-1:0;
     Lpower = (Math.abs(Math.pow(Lpos,2))>0.15)?(Math.pow(Lpos,2)*Math.signum(Lpos))/3*-1:0;
-    SmartDashboard.putNumber("Rpower: ", Rpower);
-    SmartDashboard.putNumber("Lpower: ", Lpower);
+    
 
     drive.setPower(Rpower,Lpower );
   }

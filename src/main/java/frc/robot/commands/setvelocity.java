@@ -10,25 +10,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
-public class PID extends CommandBase {
+public class setvelocity extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private double lastError = 0;
-  private double sumError = 0;
-  private double kp = 0.15;
-  private double ki = 0.0;
-  private double kd = 0.0;
-  private double sp;
-  private double pv;
-  private Drive drive;
-  private double error;
+private final Drive drive;
+private double vel;
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public PID(Drive drive, double sp) {
-    this.sp = (0.03+(sp*0.23));
-    this.drive = drive;
+  public setvelocity(double vel, Drive drive) {
+    this.vel = vel;
+    this. drive = drive;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drive);
   }
@@ -40,34 +33,19 @@ public class PID extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double pv = (drive.getVelocity());
-    error = sp-pv;
-    sumError +=error;
-    double p = kp*error + kd*sumError + kd*(lastError-error);
-    lastError = error;
-    if(p>0.4){
-      p=0.4;
-    }
-    drive.setPower(p,p);
-    SmartDashboard.putNumber("velocity",drive.getVelocity());
-    SmartDashboard.putNumber("KP",kp*error);
-    SmartDashboard.putNumber("KD",kd*sumError);
-    SmartDashboard.putNumber("KD",kd*(lastError-error));
-    SmartDashboard.putNumber("POWER",p);
-
-
+    drive.setVelocity(vel,vel);
+    SmartDashboard.putNumber("VELOCITY", drive.getVelocity());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drive.setPower(0,0);
-    drive.resetEncoder();
+    drive.setPower(0, 0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(sp)-Math.abs(pv)<=0.05;
+    return false;
   }
 }
